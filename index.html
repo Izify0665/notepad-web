@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notepad</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, textarea { width: 100%; margin-bottom: 10px; }
+    button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+    .note { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Notepad</h1>
+  <div>
+    <input type="text" id="noteTitle" placeholder="Note Title" />
+    <textarea id="noteContent" placeholder="Note Content" rows="4"></textarea>
+    <button onclick="addNote()">Add Note</button>
+  </div>
+
+  <h2>Notes</h2>
+  <div id="notesContainer"></div>
+
+  <script>
+    // Fetch and display all notes
+    function getNotes() {
+      fetch('http://localhost:3000/notes')
+        .then(response => response.json())
+        .then(notes => {
+          const notesContainer = document.getElementById('notesContainer');
+          notesContainer.innerHTML = '';
+          notes.forEach(note => {
+            const noteDiv = document.createElement('div');
+            noteDiv.classList.add('note');
+            noteDiv.innerHTML = `
+              <strong>${note.title}</strong><br />
+              ${note.content}<br />
+              <button onclick="deleteNote(${note.id})">Delete</button>
+            `;
+            notesContainer.appendChild(noteDiv);
+          });
+        });
+    }
+
+    // Add a new note
+    function addNote() {
+      const title = document.getElementById('noteTitle').value;
+      const content = document.getElementById('noteContent').value;
+
+      if (!title || !content) {
+        alert('Please fill in both fields!');
+        return;
+      }
+
+      fetch('http://localhost:3000/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content })
+      })
+        .then(response => response.json())
+        .then(() => {
+          getNotes();
+          document.getElementById('noteTitle').value = '';
+          document.getElementById('noteContent').value = '';
+        });
+    }
+
+    // Delete a note
+    function deleteNote(id) {
+      fetch(`http://localhost:3000/notes/${id}`, { method: 'DELETE' })
+        .then(() => getNotes());
+    }
+
+    // Initialize and fetch notes on load
+    getNotes();
+  </script>
+</body>
+</html>
