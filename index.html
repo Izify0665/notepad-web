@@ -26,7 +26,7 @@
   <script>
     // Fetch and display all notes
     function getNotes() {
-      fetch('http://localhost:3000/notes')
+      fetch('https://notepad-961b666cbfc0.herokuapp.com/')
         .then(response => response.json())
         .then(notes => {
           const notesContainer = document.getElementById('notesContainer');
