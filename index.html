@@ -54,7 +54,7 @@
         return;
       }
 
-      fetch('http://localhost:3000/notes', {
+      fetch('https://notepad-961b666cbfc0.herokuapp.com/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content })
@@ -69,7 +69,7 @@
 
     // Delete a note
     function deleteNote(id) {
-      fetch(`http://localhost:3000/notes/${id}`, { method: 'DELETE' })
+      fetch(`https://notepad-961b666cbfc0.herokuapp.com/${id}`, { method: 'DELETE' })
         .then(() => getNotes());
     }
 
